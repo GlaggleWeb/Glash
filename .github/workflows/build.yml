@@ -17,10 +17,10 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: PyInstaller installieren
+    - name: PyInstaller & Module installieren
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller
+        pip install pyinstaller PyQt6
 
     - name: App kompilieren
       run: |
