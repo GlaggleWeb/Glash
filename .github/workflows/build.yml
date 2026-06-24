@@ -1,0 +1,39 @@
+name: Erstelle macOS App und DMG
+
+on:
+  push:
+    branches: [ main ] # Startet den Bau jedes Mal, wenn du Code hochlädst
+
+jobs:
+  build-macos:
+    runs-on: macos-latest # GitHub stellt einen Mac-Server bereit
+
+    steps:
+    - name: Code auschecken
+      uses: actions/checkout@v4
+
+    - name: Python einrichten
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: PyInstaller & Tools installieren
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+
+    - name: App kompilieren
+      run: |
+        pyinstaller --windowed --onefile Glash2.0.py
+
+    - name: DMG Installer erstellen
+      uses: create-dmg/create-dmg-action@v1.1.0
+      with:
+        name: GlashInstaller
+        srcdir: dist/Glash2.0.app
+
+    - name: DMG als Download bereitstellen
+      uses: actions/upload-artifact@v4
+      with:
+        name: Mac-DMG-Installer
+        path: GlashInstaller.dmg
