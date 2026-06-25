@@ -1,0 +1,35 @@
+name: Erstelle Windows Installer für Glash Browser 2.0
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Code auschecken
+      uses: actions/checkout@v4
+
+    - name: Python einrichten
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11' # Stabilste Version für PyQt6 & PyInstaller Builds
+
+    - name: PyInstaller & Module installieren
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller PyQt6 PyQt6-WebEngine
+
+    - name: Windows EXE mit Icon kompilieren
+      run: |
+        pyinstaller --noconsole --onefile --icon=icon.ico Glash_for_windows.py
+
+    - name: Windows EXE als Download bereitstellen (Artifact)
+      uses: actions/upload-artifact@v4
+      with:
+        name: Glash-Windows-App
+        path: dist/Glash_for_windows.exe
